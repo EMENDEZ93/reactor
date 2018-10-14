@@ -20,7 +20,7 @@ public class ReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		Flux<String> programingLanguage = Flux.just("Java", "", "Python", "C#") 
+		Flux<String> programingLanguage = Flux.just("Java", "JavaScript", "Python", "C#") 
 				.doOnNext( language -> {
 					if( language.isEmpty() ) {
 						throw new RuntimeException("Los lenguajes no pueden ser vacios");
@@ -29,7 +29,16 @@ public class ReactorApplication implements CommandLineRunner {
 					}
 				});
 
-		programingLanguage.subscribe(log::info, error -> log.error(error.getMessage()) );
+		programingLanguage.subscribe(log::info,
+				error -> log.error(error.getMessage()),
+				new Runnable() {
+
+					@Override
+					public void run() {
+						log.info("Ha finalizado la ejecución del observable...");
+					}
+					
+				});
 		
 	}
 }
