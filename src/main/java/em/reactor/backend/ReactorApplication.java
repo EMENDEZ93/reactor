@@ -20,10 +20,16 @@ public class ReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		Flux<String> programingLanguage = Flux.just("Java", "Python", "C#") 
-				.doOnNext( System.out::println );
+		Flux<String> programingLanguage = Flux.just("Java", "", "Python", "C#") 
+				.doOnNext( language -> {
+					if( language.isEmpty() ) {
+						throw new RuntimeException("Los lenguajes no pueden ser vacios");
+					}{
+						System.out.println( language );
+					}
+				});
 
-		programingLanguage.subscribe(log::info);
+		programingLanguage.subscribe(log::info, error -> log.error(error.getMessage()) );
 		
 	}
 }
